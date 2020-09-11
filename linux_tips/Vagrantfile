@@ -1,0 +1,26 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+    ## Escolha da Box
+    config.vm.box = "ubuntu/bionic64"
+  
+    ##Máquina Client
+    config.vm.define 'docker1' do |client|
+      client.vm.network :private_network, ip: "10.20.30.70"  
+      client.vm.hostname = "docker1"
+      config.vm.network "forwarded_port", guest: 8080, host: 80
+      # Configurações de Size da VM
+      client.vm.provider "virtualbox" do |v|
+        v.name = "Docker1"
+        v.memory = 1024
+        v.cpus = 2
+
+     client.vm.provision "shell", inline: <<-SHELL
+       apt-get update
+       curl -fsSl https://get.docker.com | bash
+       SHELL
+      end
+    end
+  end
